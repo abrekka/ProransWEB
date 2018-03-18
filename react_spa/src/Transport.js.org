@@ -1,0 +1,55 @@
+import React, { Component } from "react";
+import Select from 'react-select';
+
+class Transport extends Component {
+constructor(){
+     super();
+     this.state = {
+        jsonReturnedValue: []
+     }
+     this.state.aar=2017
+
+   }
+  componentDidMount() {
+    this.hentTransport(2017)
+  }
+  handleChange(event) {
+         this.setState({value: event.target.value});
+         }
+
+
+  hentTransport(aar){
+  fetch('http://localhost:8080/transport?aar='+aar+'&uke=1')
+        .then(response => response.json())
+        .then(json => {
+        this.setState({ jsonReturnedValue: json });
+        });
+  }
+
+  render() {
+  const { selectedOption } = this.state;
+      const value = selectedOption && selectedOption.value;
+   return (
+
+        <div>
+         <form onSubmit={this.handleSubmit}>
+                    <label>
+                     Pick your favorite La Croix flavor:
+                     <select value={this.state.value} onChange={this.handleChange}>
+                     <option value="grapefruit">Grapefruit</option>
+                     <option value="lime">Lime</option>
+                     <option value="coconut">Coconut</option>
+                     <option value="mango">Mango</option>
+                   </select>
+                   </label>
+                   <input type="submit" value="Submit" />
+                 </form>
+        {this.state.jsonReturnedValue.map(function(d, idx){
+                 return (<li key={idx}>{d.transportinfo}</li>)
+               })}
+              </div>
+       );
+  }
+}
+
+export default Transport;
